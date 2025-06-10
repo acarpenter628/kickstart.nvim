@@ -84,14 +84,10 @@ I hope you enjoy your Neovim journey,
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
-vim.keymap.set('n', 'H', '^')
-vim.keymap.set('n', 'L', '$')
-vim.keymap.set('n', 'J', '<C-d>')
-vim.keymap.set('n', 'K', '<C-u>')
-vim.keymap.set('v', 'H', '^')
-vim.keymap.set('v', 'L', '$')
-vim.keymap.set('v', 'J', '<C-d>')
-vim.keymap.set('v', 'K', '<C-u>')
+vim.keymap.set('', 'H', '^')
+vim.keymap.set('', 'L', '$')
+vim.keymap.set('', 'J', '<C-d>')
+vim.keymap.set('', 'K', '<C-u>')
 
 vim.o.background = "dark" -- or "light" for light mode
 
@@ -151,6 +147,11 @@ vim.o.timeoutlen = 300
 -- Configure how new splits should be opened
 vim.o.splitright = true
 vim.o.splitbelow = true
+
+vim.o.tabstop = 4
+vim.o.softtabstop = 4
+vim.o.shiftwidth = 4
+vim.o.expandtab = true
 
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
@@ -259,7 +260,6 @@ rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
-
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
@@ -685,7 +685,6 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
@@ -913,7 +912,39 @@ require('lazy').setup({
   },
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  -- { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
+      signs = true,
+      keywords = {
+        ABCTODONOW = {
+          icon = " ", -- icon used for the sign, and in search results
+          color = "todonow", -- can be a hex color, or a named color (see below)
+          alt = { "ABC TODO NOW", "abc todo now"  }, -- a set of other keywords that all map to this FIX keywords
+          -- signs = false, -- configure signs for some keywords individually
+        },
+        --HACK = { icon = " ", color = "warning" },
+        ABCTODO = { icon = " ", color = "abctodo", alt = { "ABC TODO", "abc todo" } },
+        TEST_ABCTODO = { icon = " ", color = "abctest", alt = { "ABC TODO TEST", "abc todo test" } },
+        TRACE_ABCTODO = { icon = " ", color = "todotrace", alt = { "ABC TODO TRACE", "ABC TODO ENHANCE", "abc todo trace", "abc todo enhance" } },
+      },
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+      highlight = {
+        pattern = [[.*<(KEYWORDS)\s*]],
+      },
+      colors = {
+        todonow = {"#53c9c7"},
+        todotrace = {"#35e880"},
+        abctodo = {"#de5b5b"},
+        abctest = {"#fcba03"},
+      },
+      merge_keywords = false,
+    }
+  },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
