@@ -112,7 +112,8 @@ vim.o.number = true
 vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
-vim.o.mouse = 'a'
+-- vim.o.mouse = 'a'
+vim.o.mouse = ''
 
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
@@ -294,7 +295,22 @@ require('lazy').setup({
       },
     },
   },
+  {
+    'fei6409/log-highlight.nvim',
+    config = function()
+        require('log-highlight').setup {}
+    end,
+  },
   { "ellisonleao/gruvbox.nvim", priority = 1000 , config = true, opts = ...},
+  { "Mofiqul/dracula.nvim", priority = 1000 , config = true, opts = ...},
+  { "nyoom-engineering/oxocarbon.nvim", priority = 1000},
+  { "scottmckendry/cyberdream.nvim", priority = 1000 , 
+    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+    opts = {
+        italic_comments = true,
+      },
+
+  },
   { "chaoren/vim-wordmotion" },
   -- { "edluffy/specs.nvim"},  -- This one crashed any pop up like :Lazy or telescope
 
@@ -900,7 +916,7 @@ require('lazy').setup({
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
         styles = {
-          comments = { italic = false }, -- Disable italics in comments
+          comments = { italic = true },
         },
       }
 
@@ -911,7 +927,7 @@ require('lazy').setup({
     end,
   },
 
-  -- Highlight todo, notes, etc in comments
+  -- Highlight ABC TODO, notes, etc in comments
   -- { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
   {
     "folke/todo-comments.nvim",
@@ -1008,6 +1024,11 @@ require('lazy').setup({
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
+  {
+    "nvim-zh/colorful-winsep.nvim",
+    config = true,
+    event = { "WinLeave" },
+  }
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -1057,6 +1078,16 @@ require('lazy').setup({
   },
 })
 
-vim.cmd([[colorscheme gruvbox]])
+-- vim.cmd([[colorscheme gruvbox]])
+vim.cmd([[colorscheme cyberdream]])
+-- vim.cmd([[colorscheme oxocarbon]])
+
+-- vim.o.cursorlineopt = "number"
+
+vim.cmd('badd ~/.config/nvim/init.lua')
+
+vim.cmd([[ highlight StatusLine guibg=NvimLightCyan ]])
+vim.cmd([[ highlight CursorLine guibg=NvimDarkGray3 ]])
+vim.cmd([[ highlight CursorLineNr guibg= NvimDarkGreen]])
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
