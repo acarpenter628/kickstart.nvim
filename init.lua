@@ -304,7 +304,7 @@ require('lazy').setup({
   { "ellisonleao/gruvbox.nvim", priority = 1000 , config = true, opts = ...},
   { "Mofiqul/dracula.nvim", priority = 1000 , config = true, opts = ...},
   { "nyoom-engineering/oxocarbon.nvim", priority = 1000},
-  { "scottmckendry/cyberdream.nvim", priority = 1000 , 
+  { "scottmckendry/cyberdream.nvim", priority = 1000 ,
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     opts = {
         italic_comments = true,
@@ -942,9 +942,15 @@ require('lazy').setup({
           -- signs = false, -- configure signs for some keywords individually
         },
         --HACK = { icon = " ", color = "warning" },
-        ABCTODO = { icon = " ", color = "abctodo", alt = { "ABC TODO", "abc todo" } },
-        TEST_ABCTODO = { icon = " ", color = "abctest", alt = { "ABC TODO TEST", "abc todo test" } },
-        TRACE_ABCTODO = { icon = " ", color = "todotrace", alt = { "ABC TODO TRACE", "ABC TODO ENHANCE", "abc todo trace", "abc todo enhance" } },
+        ABCTODO = { icon = "", color = "abctodo", alt = { "ABC TODO", "abc todo" } },
+        TEST_ABCTODO = { icon = "", color = "abctest", alt = { "ABC TODO TEST", "abc todo test" } },
+        TRACE_ABCTODO = { icon = "󰍉", color = "todotrace", alt = { "ABC TODO TRACE", "ABC TODO ENHANCE", "abc todo trace", "abc todo enhance" } },
+        -- TODO = { icon = " ", color = "info" },
+        -- HACK = { icon = " ", color = "warning" },
+        -- WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+        -- PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+        -- NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+        -- TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
       },
       -- your configuration comes here
       -- or leave it empty to use the default settings
@@ -1078,16 +1084,18 @@ require('lazy').setup({
   },
 })
 
--- vim.cmd([[colorscheme gruvbox]])
-vim.cmd([[colorscheme cyberdream]])
--- vim.cmd([[colorscheme oxocarbon]])
-
--- vim.o.cursorlineopt = "number"
 
 vim.cmd('badd ~/.config/nvim/init.lua')
-
-vim.cmd([[ highlight StatusLine guibg=NvimLightCyan ]])
 vim.cmd([[ highlight CursorLine guibg=NvimDarkGray3 ]])
-vim.cmd([[ highlight CursorLineNr guibg= NvimDarkGreen]])
+
+
+vim.cmd([[colorscheme gruvbox]])
+vim.cmd([[ highlight CursorLineNr guibg= NvimLightGreen]])
+
+-- vim.cmd([[colorscheme oxocarbon]])
+-- vim.cmd([[colorscheme cyberdream]])
+-- vim.cmd([[ highlight StatusLine guibg=NvimLightCyan ]])
+-- vim.cmd([[ highlight CursorLineNr guibg= NvimDarkGreen]])
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
