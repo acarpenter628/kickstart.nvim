@@ -109,7 +109,8 @@ vim.g.have_nerd_font = true
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
-vim.o.relativenumber = true
+-- vim.o.relativenumber = true
+vim.keymap.set('n', '<leader>zl', ':set invrelativenumber<cr>', { desc = 'toggle relative line numbers'})
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 -- vim.o.mouse = 'a'
@@ -164,6 +165,7 @@ vim.o.expandtab = true
 --   and `:help lua-options-guide`
 vim.o.list = true
 vim.opt.listchars = { tab = '» ', space = '·', nbsp = '␣' }
+vim.keymap.set('n', '<leader>z<leader>', ':set invlist<cr>', { desc = 'toggle whitespace chars'})
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -310,6 +312,14 @@ require('lazy').setup({
         italic_comments = true,
       },
 
+    -- config = function()
+    --   ---@diagnostic disable-next-line: missing-fields
+    --   require('cyberdream').setup {
+    --     italic_comments = true,
+    --   }
+    --
+    --   vim.cmd.colorscheme 'cyberdream'
+    -- end,
   },
   { "chaoren/vim-wordmotion" },
   -- { "edluffy/specs.nvim"},  -- This one crashed any pop up like :Lazy or telescope
@@ -376,6 +386,14 @@ require('lazy').setup({
       spec = {
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
+        { '<leader>z', group = 'Settings' },
+        { "<leader>w",
+            group = "[W]indows/Panes",
+            proxy = "<c-w>",
+            expand = function()
+              return require("which-key.extras").expand.win()
+            end,
+          },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
@@ -701,6 +719,10 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
+        -- clangd = {
+        --   cmd = { -- Looks for compile_commands.json in the root folder - just symlink it to there
+        --   },
+        -- },
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
@@ -916,7 +938,7 @@ require('lazy').setup({
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
         styles = {
-          comments = { italic = true },
+          comments = { italic = true }, -- enable italics in comments
         },
       }
 
@@ -1090,12 +1112,22 @@ vim.cmd([[ highlight CursorLine guibg=NvimDarkGray3 ]])
 
 
 vim.cmd([[colorscheme gruvbox]])
-vim.cmd([[ highlight CursorLineNr guibg= NvimLightGreen]])
-
--- vim.cmd([[colorscheme oxocarbon]])
 -- vim.cmd([[colorscheme cyberdream]])
--- vim.cmd([[ highlight StatusLine guibg=NvimLightCyan ]])
--- vim.cmd([[ highlight CursorLineNr guibg= NvimDarkGreen]])
+-- vim.cmd([[colorscheme oxocarbon]])
 
+-- vim.o.cursorlineopt = "number"
+
+vim.cmd('badd ~/.config/nvim/init.lua') -- add this to the open buffers so I can jump to it from any file
+
+-- vim.cmd([[ highlight WinSeparator guifg=NvimLightCyan ]])
+-- vim.cmd([[ highlight StatusLine guibg=NvimLightCyan ]])
+vim.cmd([[ highlight CursorLine guibg=NvimDarkGray3 ]])
+vim.cmd([[ highlight CursorLineNr guibg= NvimLightGreen]])
+-- vim.cmd([[ highlight CursorLineLn ctermbg=NvimLightCyan ]])
+  -- highlight CursorLine guibg=none
+  -- highlight CursorLine ctermbg=none
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+-- 
+-- ABC TODO NOW add a hotkey to chagne color schemes
+
