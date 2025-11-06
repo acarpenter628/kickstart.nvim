@@ -116,6 +116,8 @@ vim.keymap.set('n', '<leader>zl', ':set invrelativenumber<cr>', { desc = 'toggle
 -- vim.o.mouse = 'a'
 vim.o.mouse = ''
 
+-- ABC TODO hotkey to toggle mouse
+
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
 
@@ -303,8 +305,50 @@ require('lazy').setup({
         require('log-highlight').setup {}
     end,
   },
+  {
+    "nvim-zh/colorful-winsep.nvim",
+    config = function()
+      require("colorful-winsep").setup({
+        -- choose between "single", "rounded", "bold" and "double".
+        -- Or pass a table like this: { "─", "│", "┌", "┐", "└", "┘" },
+        border = "single",
+        excluded_ft = { "packer", "TelescopePrompt", "mason" },
+        highlight = nil, -- nil|string|function. See the docs's Highlights section
+        animate = {
+          enabled = false, --"shift", -- false to disable, or choose a option below (e.g. "shift") and set option for it if needed
+          shift = {
+            delta_time = 0.1,
+            smooth_speed = 2,
+            delay = 2,
+          },
+          progressive = {
+            -- animation's speed for different direction
+            vertical_delay = 3,
+            horizontal_delay = 1.5,
+          },
+        },
+        indicator_for_2wins = {
+          -- only work when the total of windows is two
+          position = "center", -- false to disable or choose between "center", "start", "end" and "both"
+          symbols = {
+            -- the meaning of left, down ,up, right is the position of separator
+            start_left = "",
+            end_left = "",
+            start_down = "",
+            end_down = "",
+            start_up = "",
+            end_up = "",
+            start_right = "",
+            end_right = "",
+          },
+        },
+      })
+    end,
+    event = { "VimEnter" }, --   WinLeave
+  },
+
   { "ellisonleao/gruvbox.nvim", priority = 1000 , config = true, opts = ...},
-  { "Mofiqul/dracula.nvim", priority = 1000 , config = true, opts = ...},
+  -- { "Mofiqul/dracula.nvim", priority = 1000 , config = true, opts = ...},
   { "nyoom-engineering/oxocarbon.nvim", priority = 1000},
   { "scottmckendry/cyberdream.nvim", priority = 1000 ,
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
@@ -312,14 +356,6 @@ require('lazy').setup({
         italic_comments = true,
       },
 
-    -- config = function()
-    --   ---@diagnostic disable-next-line: missing-fields
-    --   require('cyberdream').setup {
-    --     italic_comments = true,
-    --   }
-    --
-    --   vim.cmd.colorscheme 'cyberdream'
-    -- end,
   },
   { "chaoren/vim-wordmotion" },
   -- { "edluffy/specs.nvim"},  -- This one crashed any pop up like :Lazy or telescope
@@ -530,8 +566,8 @@ require('lazy').setup({
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
       -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
-      { 'mason-org/mason.nvim', opts = {} },
-      'mason-org/mason-lspconfig.nvim',
+      { 'mason-org/mason.nvim', opts = {}}, -- It's one of these that causes the glibc lua error
+      {'mason-org/mason-lspconfig.nvim'}, -- It's one of these that causes the glibc lua error
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
@@ -932,7 +968,7 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+    'folke/tokyonight.nvim', -- ABC TODO
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
       ---@diagnostic disable-next-line: missing-fields
@@ -949,8 +985,7 @@ require('lazy').setup({
     end,
   },
 
-  -- Highlight ABC TODO, notes, etc in comments
-  -- { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  -- Highlight 'TODO', notes, etc in comments
   {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
@@ -1052,11 +1087,7 @@ require('lazy').setup({
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
-  {
-    "nvim-zh/colorful-winsep.nvim",
-    config = true,
-    event = { "WinLeave" },
-  }
+
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -1084,7 +1115,8 @@ require('lazy').setup({
   -- Or use telescope!
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
-}, {
+},
+{
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
@@ -1107,27 +1139,56 @@ require('lazy').setup({
 })
 
 
-vim.cmd('badd ~/.config/nvim/init.lua')
-vim.cmd([[ highlight CursorLine guibg=NvimDarkGray3 ]])
+vim.cmd('badd ~/.config/nvim/init.lua') -- add this to the open buffers so I can jump to it from any file
+vim.cmd('badd ~/software_trees/notes/Spellbooks/nvim.txt') -- add this to the open buffers so I can jump to it from any file
+
+-- *gui-colors*
+-- Suggested color names (these are available on most systems):
+--     Red		LightRed	DarkRed
+--     Green	LightGreen	DarkGreen	SeaGreen
+--     Blue	LightBlue	DarkBlue	SlateBlue
+--     Cyan	LightCyan	DarkCyan
+--     Magenta	LightMagenta	DarkMagenta
+--     Yellow	LightYellow	Brown		DarkYellow
+--     Gray	LightGray	DarkGray
+--     Black	White
+--     Orange	Purple		Violet
+--
+-- Colors which define Nvim's default color scheme:
+--     NvimDarkBlue    NvimLightBlue
+--     NvimDarkCyan    NvimLightCyan
+--     NvimDarkGray1   NvimLightGray1
+--     NvimDarkGray2   NvimLightGray2
+--     NvimDarkGray3   NvimLightGray3
+--     NvimDarkGray4   NvimLightGray4
+--     NvimDarkGreen   NvimLightGreen
+--     NvimDarkMagenta NvimLightMagenta
+--     NvimDarkRed     NvimLightRed
+--     NvimDarkYellow  NvimLightYellow
+--
 
 
+
+vim.keymap.set('n', '<leader>zg', ':colorscheme gruvbox<cr>:hi CursorLine guibg=NvimDarkGray3<cr>:hi CursorLineNr guibg=NvimLightGreen<cr>:hi StatusLine guifg=DarkBlue<cr>:hi MiniStatusLineFilename guifg=DarkBlue<cr>:hi ColorfulWinSep guifg=DarkBlue<cr>', { desc = 'colorscheme gruvbox'})
 vim.cmd([[colorscheme gruvbox]])
--- vim.cmd([[colorscheme cyberdream]])
--- vim.cmd([[colorscheme oxocarbon]])
+vim.cmd([[ highlight CursorLine guibg=NvimDarkGray3 ]])
+-- vim.cmd([[ highlight CursorLineNr guibg=#fcba03 ]])
+vim.cmd([[ highlight CursorLineNr guibg=NvimLightGreen]])
+vim.cmd([[ highlight StatusLine guifg=DarkBlue]])
+vim.cmd([[ highlight MiniStatusLineFilename guifg=DarkBlue]])
+vim.cmd([[ highlight ColorfulWinSep guifg=DarkBlue]])
+
+vim.keymap.set('n', '<leader>zc', ':colorscheme cyberdream<cr>:hi CursorLineNr guibg=Green<cr>:hi StatusLine guifg=Cyan<cr>:hi MiniStatusLineFilename guifg=Cyan<cr>:hi ColorfulWinSep guifg=Cyan<cr>', { desc = 'colorscheme cyberdream'})
+
+vim.keymap.set('n', '<leader>zo', ':colorscheme oxocarbon<cr>:hi CursorLineNr guibg=DarkCyan<cr>:hi StatusLine guifg=LightGreen<cr>:hi MiniStatusLineFilename guifg=LightGreen<cr>:hi ColorfulWinSep guifg=LightGreen<cr>', { desc = 'colorscheme oxocarbon'})
+
+-- vim.cmd([[ highlight WinSeparator guifg=Cyan]]) -- These don't seem to do anything.  Maybe because I have the colorful separator plugin?
+    -- "nvim-zh/colorful-winsep.nvim",
 
 -- vim.o.cursorlineopt = "number"
 
-vim.cmd('badd ~/.config/nvim/init.lua') -- add this to the open buffers so I can jump to it from any file
 
--- vim.cmd([[ highlight WinSeparator guifg=NvimLightCyan ]])
--- vim.cmd([[ highlight StatusLine guibg=NvimLightCyan ]])
-vim.cmd([[ highlight CursorLine guibg=NvimDarkGray3 ]])
-vim.cmd([[ highlight CursorLineNr guibg= NvimLightGreen]])
--- vim.cmd([[ highlight CursorLineLn ctermbg=NvimLightCyan ]])
-  -- highlight CursorLine guibg=none
-  -- highlight CursorLine ctermbg=none
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 -- 
--- ABC TODO NOW add a hotkey to chagne color schemes
 
