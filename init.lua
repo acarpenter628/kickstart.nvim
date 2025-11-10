@@ -117,6 +117,9 @@ vim.keymap.set('n', '<leader>zl', ':set invrelativenumber<cr>', { desc = 'toggle
 vim.o.mouse = ''
 
 -- ABC TODO hotkey to toggle mouse
+--
+
+vim.keymap.set('n', '<leader>zw', ':set invwrap<cr>', { desc = 'toggle line wrap'})
 
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
@@ -168,6 +171,7 @@ vim.o.expandtab = true
 vim.o.list = true
 vim.opt.listchars = { tab = '» ', space = '·', nbsp = '␣' }
 vim.keymap.set('n', '<leader>z<leader>', ':set invlist<cr>', { desc = 'toggle whitespace chars'})
+vim.keymap.set('n', '<leader>zh', ':set invlist<cr>', { desc = 'toggle whitespace chars'})
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -422,7 +426,7 @@ require('lazy').setup({
       spec = {
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
-        { '<leader>z', group = 'Settings' },
+        { '<leader>z', group = 'Display Settings' },
         { "<leader>w",
             group = "[W]indows/Panes",
             proxy = "<c-w>",
