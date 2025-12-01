@@ -84,18 +84,34 @@ I hope you enjoy your Neovim journey,
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
-vim.keymap.set('', 'H', '^')
-vim.keymap.set('', 'L', '$')
-vim.keymap.set('', 'J', '<C-d>')
-vim.keymap.set('', 'K', '<C-u>')
-
-vim.o.background = "dark" -- or "light" for light mode
-
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+
+vim.keymap.set('', 'H', '^')
+vim.keymap.set('', 'L', '$')
+vim.keymap.set('', 'J', '<C-d>')
+vim.keymap.set('', 'K', '<C-u>')
+
+-- Make word wrap easier
+vim.keymap.set('n', 'j', 'gj')
+vim.keymap.set('n', 'k', 'gk')
+--- Get rid of overtype mode, replace it with 'delete one character and insert'
+vim.keymap.set('n', 'R', '"_xi')
+-- Insert a newline with enter
+-- vim.keymap.set('n', '<cr>', 'o<C-[>k')
+vim.keymap.set('n', '<cr>', ":call append(line('.'), '')<cr>") -- Downside here is that it doesn't set the position for 'last insert' or whatever.  Could maybe append, type, and backspace something?
+-- x uses the black hole register
+vim.keymap.set('n', 'x', '"_x') -- ABC TODO what about in visual mode?  Maybe keep it there
+-- Do the same with c
+vim.keymap.set('n', 'c', '"_c')
+-- don't overwrite the unnamed register when pasting in visual mode
+vim.keymap.set('v', 'p', 'P')
+
+vim.o.background = "dark" -- or "light" for light mode
+
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
@@ -115,11 +131,14 @@ vim.keymap.set('n', '<leader>zl', ':set invrelativenumber<cr>', { desc = 'toggle
 -- Enable mouse mode, can be useful for resizing splits for example!
 -- vim.o.mouse = 'a'
 vim.o.mouse = ''
+vim.keymap.set('n', '<leader>zmn', ':set mouse=<cr>', { desc = 'mouse off'})
+vim.keymap.set('n', '<leader>zma', ':set mouse=a<cr>', { desc = 'mouse on'})
 
 -- ABC TODO hotkey to toggle mouse
---
+--  Do anything with whichwrap?
 
 vim.keymap.set('n', '<leader>zw', ':set invwrap<cr>', { desc = 'toggle line wrap'})
+vim.o.linebreak = true
 
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
@@ -255,6 +274,8 @@ end
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
+
+
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -309,48 +330,72 @@ require('lazy').setup({
         require('log-highlight').setup {}
     end,
   },
-  {
-    "nvim-zh/colorful-winsep.nvim",
-    config = function()
-      require("colorful-winsep").setup({
-        -- choose between "single", "rounded", "bold" and "double".
-        -- Or pass a table like this: { "─", "│", "┌", "┐", "└", "┘" },
-        border = "single",
-        excluded_ft = { "packer", "TelescopePrompt", "mason" },
-        highlight = nil, -- nil|string|function. See the docs's Highlights section
-        animate = {
-          enabled = false, --"shift", -- false to disable, or choose a option below (e.g. "shift") and set option for it if needed
-          shift = {
-            delta_time = 0.1,
-            smooth_speed = 2,
-            delay = 2,
-          },
-          progressive = {
-            -- animation's speed for different direction
-            vertical_delay = 3,
-            horizontal_delay = 1.5,
-          },
-        },
-        indicator_for_2wins = {
-          -- only work when the total of windows is two
-          position = "center", -- false to disable or choose between "center", "start", "end" and "both"
-          symbols = {
-            -- the meaning of left, down ,up, right is the position of separator
-            start_left = "",
-            end_left = "",
-            start_down = "",
-            end_down = "",
-            start_up = "",
-            end_up = "",
-            start_right = "",
-            end_right = "",
-          },
-        },
-      })
-    end,
-    event = { "VimEnter" }, --   WinLeave
-  },
+  -- {
+  --   "nvim-zh/colorful-winsep.nvim",
+  --   config = function()
+  --     require("colorful-winsep").setup({
+  --       -- choose between "single", "rounded", "bold" and "double".
+  --       -- Or pass a table like this: { "─", "│", "┌", "┐", "└", "┘" },
+  --       border = "single",
+  --       excluded_ft = { "packer", "TelescopePrompt", "mason" },
+  --       highlight = nil, -- nil|string|function. See the docs's Highlights section
+  --       animate = {
+  --         enabled = false, --"shift", -- false to disable, or choose a option below (e.g. "shift") and set option for it if needed
+  --         shift = {
+  --           delta_time = 0.1,
+  --           smooth_speed = 2,
+  --           delay = 2,
+  --         },
+  --         progressive = {
+  --           -- animation's speed for different direction
+  --           vertical_delay = 3,
+  --           horizontal_delay = 1.5,
+  --         },
+  --       },
+  --       indicator_for_2wins = {
+  --         -- only work when the total of windows is two
+  --         position = "center", -- false to disable or choose between "center", "start", "end" and "both"
+  --         symbols = {
+  --           -- the meaning of left, down ,up, right is the position of separator
+  --           start_left = "",
+  --           end_left = "",
+  --           start_down = "",
+  --           end_down = "",
+  --           start_up = "",
+  --           end_up = "",
+  --           start_right = "",
+  --           end_right = "",
+  --         },
+  --       },
+  --     })
+  --   end,
+  --   event = { "VimEnter" }, --   WinLeave
+  -- },
+  --
+  
 
+  -- {
+  --   "cxwx/specs.nvim",
+  --   config = function()
+  --     require("specs").setup({
+  --   show_jumps  = true,
+  --   min_jump = 30,
+  --   popup = {
+  --       delay_ms = 0, -- delay before popup displays
+  --       inc_ms = 10, -- time increments used for fade/resize effects 
+  --       blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
+  --       width = 10,
+  --       winhl = "PMenu",
+  --       fader = require('specs').linear_fader,
+  --       resizer = require('specs').shrink_resizer
+  --   },
+  --   ignore_filetypes = {},
+  --   ignore_buftypes = {
+  --       nofile = true,
+  --   },
+  --     })
+  --   end,
+  -- },
   { "ellisonleao/gruvbox.nvim", priority = 1000 , config = true, opts = ...},
   -- { "Mofiqul/dracula.nvim", priority = 1000 , config = true, opts = ...},
   { "nyoom-engineering/oxocarbon.nvim", priority = 1000},
@@ -427,6 +472,7 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>z', group = 'Display Settings' },
+        { '<leader>S', group = '[S]essions' },
         { "<leader>w",
             group = "[W]indows/Panes",
             proxy = "<c-w>",
@@ -518,7 +564,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' }) -- ABC TODO this is the one that fuzzy finds, can I limit it to only open files?  Yes.  Look at how this works, it looks like it's taking the list of files containing that word and limiting the search to those?  What's going on here?
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
@@ -1047,6 +1093,8 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
 
+      require('mini.sessions').setup({ autoread = true, autowrite = false})
+
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
@@ -1065,6 +1113,8 @@ require('lazy').setup({
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
+    -- event = { "StdinReadPost" }, --   WinLeave
+    -- lazy = false,
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
@@ -1142,6 +1192,12 @@ require('lazy').setup({
   },
 })
 
+require('mini.sessions').setup({ autoread = true, autowrite = false})
+
+vim.cmd(':command LoadSesh lua MiniSessions.read()')
+
+vim.keymap.set('n', '<leader>Sw', ':lua MiniSessions.write("Session.vim")<cr>', { desc = 'Write Session'})
+vim.keymap.set('n', '<leader>Sr', ':lua MiniSessions.read()<cr>', { desc = 'Read Session'})
 
 vim.cmd('badd ~/.config/nvim/init.lua') -- add this to the open buffers so I can jump to it from any file
 vim.cmd('badd ~/software_trees/notes/Spellbooks/nvim.txt') -- add this to the open buffers so I can jump to it from any file
@@ -1182,14 +1238,13 @@ vim.cmd([[ highlight StatusLine guifg=DarkBlue]])
 vim.cmd([[ highlight MiniStatusLineFilename guifg=DarkBlue]])
 vim.cmd([[ highlight ColorfulWinSep guifg=DarkBlue]])
 
-vim.keymap.set('n', '<leader>zc', ':colorscheme cyberdream<cr>:hi CursorLineNr guibg=Green<cr>:hi StatusLine guifg=Cyan<cr>:hi MiniStatusLineFilename guifg=Cyan<cr>:hi ColorfulWinSep guifg=Cyan<cr>', { desc = 'colorscheme cyberdream'})
+vim.keymap.set('n', '<leader>zc', ':colorscheme cyberdream<cr>:hi CursorLineNr guibg=DarkGreen<cr>:hi StatusLine guifg=Cyan<cr>:hi MiniStatusLineFilename guifg=Cyan<cr>:hi ColorfulWinSep guifg=Cyan<cr>', { desc = 'colorscheme cyberdream'})
 
 vim.keymap.set('n', '<leader>zo', ':colorscheme oxocarbon<cr>:hi CursorLineNr guibg=DarkCyan<cr>:hi StatusLine guifg=LightGreen<cr>:hi MiniStatusLineFilename guifg=LightGreen<cr>:hi ColorfulWinSep guifg=LightGreen<cr>', { desc = 'colorscheme oxocarbon'})
 
--- vim.cmd([[ highlight WinSeparator guifg=Cyan]]) -- These don't seem to do anything.  Maybe because I have the colorful separator plugin?
+-- vim.cmd([[ highlight WinSeparator guifg=Cyan]]) -- Commented because I have the colorful separator plugin
     -- "nvim-zh/colorful-winsep.nvim",
 
--- vim.o.cursorlineopt = "number"
 
 
 -- The line beneath this is called `modeline`. See `:help modeline`
