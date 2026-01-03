@@ -95,14 +95,25 @@ vim.keymap.set('', 'L', '$')
 vim.keymap.set('', 'J', '<C-d>')
 vim.keymap.set('', 'K', '<C-u>')
 
+-- ABC TODO capital E/W/B for like 5x?
+-- Those basically already exist for code lol.  I need to get better about using . for repeat (nvm apparently it doesn't work for motions, just for actions)
+--
+-- t/T could be overwritten, I'm never going to use that instead of fh
+
 -- Make word wrap easier
 vim.keymap.set('n', 'j', 'gj')
 vim.keymap.set('n', 'k', 'gk')
 --- Get rid of overtype mode, replace it with 'delete one character and insert'
 vim.keymap.set('n', 'R', '"_xi')
 -- Insert a newline with enter
--- vim.keymap.set('n', '<cr>', 'o<C-[>k')
-vim.keymap.set('n', '<cr>', ":call append(line('.'), '')<cr>") -- Downside here is that it doesn't set the position for 'last insert' or whatever.  Could maybe append, type, and backspace something?
+vim.keymap.set('n', '<cr>', ":call append(line('.'), '')<cr>")
+-- vim.keymap.set('n', '<leader><cr>', ":call insert(line('.'), '')<cr>", { desc = 'insert blank line above'}) -- ABC TODO what to map this to?  I'd like shift+Enter, and I could hack that to work with Windows Terminal, but I'd prefer not to rely on any terminal specific implementation.  Maybe <leader><CR>?
+-- This one didn't work so i guess just copy from the nvim source for [<space>
+vim.keymap.set('n', '<leader><cr>', function()
+      vim.go.operatorfunc = "v:lua.require'vim._buf'.space_above"
+      return 'g@l'
+    end, { expr = true, desc = 'insert blank line above'})
+
 -- x uses the black hole register
 vim.keymap.set('n', 'x', '"_x') -- ABC TODO what about in visual mode?  Maybe keep it there
 -- Do the same with c
@@ -112,6 +123,37 @@ vim.keymap.set('v', 'p', 'P')
 
 vim.o.background = "dark" -- or "light" for light mode
 
+vim.api.nvim_create_autocmd({ "FileType"}, {  -- this seems to only work after treesitter is loaded.  ie must switch buffer and switch back
+    callback = function()
+
+        -- check if treesitter has parser 
+        if require("nvim-treesitter.parsers").has_parser() then
+            
+            -- use treesitter folding
+            vim.opt.foldmethod = "expr"
+            vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+        else
+
+            -- use alternative foldmethod
+            vim.opt.foldmethod = "indent"
+        end
+    end,
+})
+
+vim.o.foldlevel = 9
+vim.opt.foldtext = "" -- abc todo put a triangle here too?
+-- ABC TODO NOW https://www.reddit.com/r/neovim/comments/1nxzz9i/new_foldinner_fillchar/
+-- ABC TODO NOW if I update to the main branch nightly build, I can set foldcolumn to 1 and set fillchars=foldinner:\|
+vim.o.foldcolumn = '1'
+vim.o.foldlevelstart = 9
+-- vim.wo.foldtext = '' -- abc todo what's wo instead of o?
+vim.opt.fillchars = {
+    fold = ' ',
+    foldclose = "",--'',
+    foldopen = "",--'',
+    foldsep = ' ',
+    foldinner = ' '
+}
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
@@ -543,7 +585,7 @@ require('lazy').setup({
         --
         -- defaults = {
         --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },  -- ABC TODO NOW file ignore patterns.  Actually use a .ignore file in the project
         --   },
         -- },
         -- pickers = {}
@@ -1038,6 +1080,7 @@ require('lazy').setup({
   -- Highlight 'TODO', notes, etc in comments
   {
     "folke/todo-comments.nvim",
+    version = '1.4',
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {
       signs = true,
