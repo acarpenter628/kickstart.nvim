@@ -90,10 +90,10 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
-vim.keymap.set('', 'H', '^')
-vim.keymap.set('', 'L', '$')
-vim.keymap.set('', 'J', '<C-d>')
-vim.keymap.set('', 'K', '<C-u>')
+-- vim.keymap.set('', 'H', '^')
+-- vim.keymap.set('', 'L', '$')
+-- vim.keymap.set('', 'J', '<C-d>')
+-- vim.keymap.set('', 'K', '<C-u>')
 
 -- ABC TODO capital E/W/B for like 5x?
 -- Those basically already exist for code lol.  I need to get better about using . for repeat (nvm apparently it doesn't work for motions, just for actions)
@@ -101,7 +101,7 @@ vim.keymap.set('', 'K', '<C-u>')
 -- t/T could be overwritten, I'm never going to use that instead of fh
 
 -- Make word wrap easier
-vim.keymap.set('n', 'j', 'gj')
+vim.keymap.set('n', 'j', 'gj') -- ABC TODO normal and visual mode?
 vim.keymap.set('n', 'k', 'gk')
 --- Get rid of overtype mode, replace it with 'delete one character and insert'
 vim.keymap.set('n', 'R', '"_xi')
@@ -116,8 +116,9 @@ vim.keymap.set('n', '<leader><cr>', function()
 
 -- x uses the black hole register
 vim.keymap.set('n', 'x', '"_x') -- ABC TODO what about in visual mode?  Maybe keep it there
--- Do the same with c
+-- Do the same with c (normal and visual)
 vim.keymap.set('n', 'c', '"_c')
+vim.keymap.set('v', 'c', '"_c')
 -- don't overwrite the unnamed register when pasting in visual mode
 vim.keymap.set('v', 'p', 'P')
 
@@ -931,20 +932,20 @@ require('lazy').setup({
     },
     opts = {
       notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          return {
-            timeout_ms = 500,
-            lsp_format = 'fallback',
-          }
-        end
-      end,
+      -- format_on_save = function(bufnr)
+      --   -- Disable "format_on_save lsp_fallback" for languages that don't
+      --   -- have a well standardized coding style. You can add additional
+      --   -- languages here or re-enable it for the disabled ones.
+      --   local disable_filetypes = { c = true, cpp = true }
+      --   if disable_filetypes[vim.bo[bufnr].filetype] then
+      --     return nil
+      --   else
+      --     return {
+      --       timeout_ms = 500,
+      --       lsp_format = 'fallback',
+      --     }
+      --   end
+      -- end,
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
